@@ -46,7 +46,7 @@ func (p *Planner) Execute(trimChunkChannel chan TrimChunk, plannerLeftLimitID in
 			endIntervalID,
 		}
 
-		startIntervalID = endIntervalID
+		startIntervalID = endIntervalID + 1
 		endIntervalID = p.getEndIntervalID(connection.driver, startIntervalID, p.chunkSize, plannerRightLimitID)
 	}
 
