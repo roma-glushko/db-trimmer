@@ -3,8 +3,9 @@ package nonblocking
 import (
 	"log"
 	"sync"
+	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 )
 
 type TrimChunk struct {
@@ -39,13 +40,34 @@ func (t *Trimmer) Execute(trimChunkChannel chan TrimChunk) {
 	}()
 
 	for trimChunk := range trimChunkChannel {
-		log.Printf("[Trimmer #%d] Trimming chunk: %d - %d", t.trimmerID, trimChunk.StartInvervalID, trimChunk.EndIntervalID)
+		executionStart := time.Now()
 		t.trimChunk(connection, trimChunk)
+		executionElapsed := time.Since(executionStart)
+		log.Printf("[Trimmer #%d] Trimming chunk: %d - %d (%s)", t.trimmerID, trimChunk.StartInvervalID, trimChunk.EndIntervalID, executionElapsed)
 	}
 }
 
-// TrimChunk - trim planned data chunks
+// trimChunk
 func (t *Trimmer) trimChunk(connection *Connection, trimChunk TrimChunk) {
+	// retry deleting chunks on locks
+	for try := 0; try < 5; try++ {
+		err := t.deleteChunk(connection, trimChunk)
+
+		if err == nil {
+			return
+		}
+
+		if err.Number != 1205 && err.Number != 1213 {
+			// unknown error
+			panic(err.Error())
+		}
+
+		log.Printf("[Trimmer #%d] Trimming chunk: %d : %d - Retry", t.trimmerID, trimChunk.StartInvervalID, trimChunk.EndIntervalID)
+	}
+}
+
+// deleteChunk - trim planned data chunks
+func (t *Trimmer) deleteChunk(connection *Connection, trimChunk TrimChunk) *mysql.MySQLError {
 	var err error
 
 	if trimChunk.EndIntervalID == 0 {
@@ -55,7 +77,9 @@ func (t *Trimmer) trimChunk(connection *Connection, trimChunk TrimChunk) {
 		_, err = connection.driver.Exec("DELETE FROM catalog_product_entity WHERE entity_id >= ? AND entity_id < ?", trimChunk.StartInvervalID, trimChunk.EndIntervalID)
 	}
 
-	if err != nil {
-		panic(err.Error()) // proper error handling instead of panic in your app
+	if err == nil {
+		return nil
 	}
+
+	return err.(*mysql.MySQLError)
 }

@@ -27,6 +27,7 @@ func NewTrimmerManager(ThreadCount int, connectionPool *ConnectionPool) *Trimmer
 // Execute - init trimmers
 func (m *TrimmerManager) Execute(trimChunkChannel chan TrimChunk) {
 	log.Printf("Init Trimmers..")
+	
 
 	for i := 0; i < m.ThreadCount; i++ {
 		trimmer := NewTrimmer(i+1, m.connectionPool, m.trimmerWaitGroup)

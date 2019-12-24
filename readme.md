@@ -35,9 +35,18 @@ DELETE FROM catalog_product_entity;
 
 ~913,660 records - 28mins
 
-### Async (4 threads: 2 for planning and 2 for trimming) 1k-chunks Deleting
+### Async (6 threads: 2 for planning and 4 for trimming) 1k-chunks Deleting
 
-~913,660 records
+~913,660 records - ~40mins (~3secs avg delete query exec time)
 
-Planning - X
-Trimming - X
+### Async (6 threads: 2 for planning and 4 for trimming) 500-chunks Deleting
+
+~913,660 records - 14mins (~1.8secs avg delete query exec time)
+
+### Async (6 threads: 2 for planning and 4 for trimming) 300-chunks Deleting
+
+~913,660 records - X (~2.5secs avg delete query exec time)
+
+### Async (8 threads: 2 for planning and 6 for trimming) 300-chunks Deleting
+
+~913,660 records - 8mins (~1.3secs avg delete query exec time)

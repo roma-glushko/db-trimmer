@@ -42,7 +42,7 @@ func (p *NonBlockingPoc) Execute() {
 
 	executionStart := time.Now()
 
-	var trimChunkChannel = make(chan nonblocking.TrimChunk, p.PlannerThreadCount*4)
+	var trimChunkChannel = make(chan nonblocking.TrimChunk, p.PlannerThreadCount*100)
 
 	// init connection pool
 	log.Printf("Init Connection Pool..")
@@ -56,7 +56,7 @@ func (p *NonBlockingPoc) Execute() {
 
 	// init trimmers
 	trimmerManager := nonblocking.NewTrimmerManager(p.TrimmerThreadCount, connectionPool)
-	//trimmerManager.Execute(trimChunkChannel)
+	trimmerManager.Execute(trimChunkChannel)
 
 	// init planners
 	plannerManager := nonblocking.NewPlannerManager(p.PlannerThreadCount, connectionPool, p.ChunkSize)
