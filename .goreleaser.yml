@@ -51,4 +51,3 @@ release:
   # You can change the name of the GitHub release.
   # Default is `{{.Tag}}`
   name_template: "{{.ProjectName}}-v{{.Version}}"
-  disable: false
