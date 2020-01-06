@@ -1,4 +1,4 @@
-name: db-trimmer
+name: release
 
 on:
   pull_request:
