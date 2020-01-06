@@ -1,0 +1,55 @@
+# This is an example goreleaser.yaml file with some sane defaults.
+# Make sure to check the documentation at http://goreleaser.com
+before:
+  hooks:
+    - go mod tidy
+    - packr2
+    - go generate ./...
+builds:
+- env:
+  - CGO_ENABLED=0
+  goos:
+    - linux
+    - darwin
+    - windows
+  goarch:
+    - 386
+    - amd64
+    - arm
+    - arm64
+
+archives:
+- 
+  id: dbtrimmer-archive
+  replacements:
+    windows: Windows
+    linux: Linux
+    darwin: macOS
+    amd64: 64-bit
+    386: 32-bit
+  format: zip
+
+checksum:
+  name_template: "{{ .ProjectName }}-{{ .Tag }}-checksums.txt"
+
+snapshot:
+  name_template: "{{ .ProjectName }}-{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^doc:'
+    - '^test:'
+    - Merge pull request
+    - Merge branch
+
+release:
+  github:
+    owner: roma-glushko
+    name: db-trimmer
+  prerelease: auto
+  # You can change the name of the GitHub release.
+  # Default is `{{.Tag}}`
+  name_template: "{{.ProjectName}}-v{{.Version}}"
+  disable: false
