@@ -1,9 +1,9 @@
 name: release
 
 on:
- push:
-  branches: 
-   - refs/tags/*
+  push:
+    tags:
+    - '*'
 
 jobs:
   goreleaser:
