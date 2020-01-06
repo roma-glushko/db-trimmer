@@ -3,7 +3,6 @@
 before:
   hooks:
     - go mod tidy
-    - packr2
     - go generate ./...
 builds:
 - env:
