@@ -62,30 +62,6 @@ func (p *NonBlockingPoc) Execute() {
 	plannerManager := nonblocking.NewPlannerManager(p.PlannerThreadCount, connectionPool, p.ChunkSize)
 	plannerManager.Execute(trimChunkChannel)
 
-	// planning chunks
-	// log.Printf("Chunk Planning..")
-	// startIntervalID := p.getStartIntervalID(db)
-	// endIntervalID := p.getEndIntervalID(db, startIntervalID, p.ChunkSize)
-
-	// for endIntervalID != 0 {
-	// 	// chunk planning
-	// 	log.Printf("Planning chunk: %d - %d", startIntervalID, endIntervalID)
-	// 	trimChunkChannel <- nonblocking.TrimChunk{
-	// 		startIntervalID,
-	// 		endIntervalID,
-	// 	}
-
-	// 	startIntervalID := endIntervalID
-	// 	endIntervalID = p.getEndIntervalID(db, startIntervalID, p.ChunkSize)
-	// }
-
-	// // last chunk planning
-	// log.Printf("Planning last chunk %d", startIntervalID)
-	// trimChunkChannel <- nonblocking.TrimChunk{
-	// 	startIntervalID,
-	// 	0,
-	// }
-
 	plannerManager.WaitForPlanners()
 	close(trimChunkChannel)
 	log.Printf("Chunk Planning has been finished")

@@ -52,14 +52,24 @@ var rootCmd = &cobra.Command{
 	Short: "Reduce database size for your development environments in an intelligent way",
 	Long:  `db-trimmer - a tool to reduce database size for your development environments in an intelligent way`,
 	Run: func(cmd *cobra.Command, args []string) {
-		nonblockingPoc := poc.NewNonBlockingPoc(
+		// nonblockingPoc := poc.NewNonBlockingPoc(
+		// 	"mysql",
+		// 	fmt.Sprintf(`%s:%s@tcp(%s:%s)/%s`, dbUser, dbPassword, dbHost, dbPort, dbName), // todo: maybe not only tcp connection but also socket
+		// 	chunkSize,
+		// 	plannerThreads,
+		// 	trimmerThreads,
+		// )
+		// nonblockingPoc.Execute()
+
+		copySchemaPoc := poc.NewCopySchemaPoc(
 			"mysql",
-			fmt.Sprintf(`%s:%s@tcp(%s:%s)/%s`, dbUser, dbPassword, dbHost, dbPort, dbName), // todo: maybe not only tcp connection but also socket
-			chunkSize,
-			plannerThreads,
-			trimmerThreads,
+			dbUser,
+			dbPassword,
+			dbHost,
+			dbPort,
+			dbName,
 		)
-		nonblockingPoc.Execute()
+		copySchemaPoc.Execute()
 	},
 }
 

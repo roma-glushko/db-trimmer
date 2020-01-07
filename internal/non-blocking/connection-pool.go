@@ -40,7 +40,6 @@ func NewConnectionPool(threadCount int, driverName string, dataSourceName string
 		}
 
 		// configure connection session
-
 		db.Exec("SET @@session.triggers = OFF")
 
 		conn := &Connection{ID: i, driver: db}
