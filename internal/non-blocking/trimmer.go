@@ -72,9 +72,9 @@ func (t *Trimmer) deleteChunk(connection *Connection, trimChunk TrimChunk) *mysq
 
 	if trimChunk.EndIntervalID == 0 {
 		// last chunk trimming
-		_, err = connection.driver.Exec("DELETE FROM catalog_product_entity WHERE entity_id >= ?", trimChunk.StartInvervalID)
+		_, err = connection.driver.Exec("DELETE FROM catalog_product_entity WHERE row_id >= ?", trimChunk.StartInvervalID)
 	} else {
-		_, err = connection.driver.Exec("DELETE FROM catalog_product_entity WHERE entity_id >= ? AND entity_id < ?", trimChunk.StartInvervalID, trimChunk.EndIntervalID)
+		_, err = connection.driver.Exec("DELETE FROM catalog_product_entity WHERE row_id >= ? AND row_id < ?", trimChunk.StartInvervalID, trimChunk.EndIntervalID)
 	}
 
 	if err == nil {

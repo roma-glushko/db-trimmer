@@ -61,7 +61,7 @@ func (p *Planner) Execute(trimChunkChannel chan TrimChunk, plannerLeftLimitID in
 func (p *Planner) getEndIntervalID(db *sql.DB, startIntervalID int, chunkSize int, rightLimitID int) int {
 	var endIntervalID int
 
-	err := db.QueryRow("SELECT entity_id FROM catalog_product_entity WHERE entity_id >= ? AND entity_id <= ? ORDER BY entity_id LIMIT ?,1", startIntervalID, rightLimitID, chunkSize).Scan(&endIntervalID)
+	err := db.QueryRow("SELECT row_id FROM catalog_product_entity WHERE row_id >= ? AND row_id <= ? ORDER BY row_id LIMIT ?,1", startIntervalID, rightLimitID, chunkSize).Scan(&endIntervalID)
 
 	if err == sql.ErrNoRows {
 		return 0

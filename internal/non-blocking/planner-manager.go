@@ -75,7 +75,7 @@ func (m *PlannerManager) WaitForPlanners() {
 func (m *PlannerManager) getPlannerStartIntervalID(db *sql.DB) int {
 	var startIntervalID int
 
-	err := db.QueryRow("SELECT MIN(entity_id) FROM catalog_product_entity").Scan(&startIntervalID)
+	err := db.QueryRow("SELECT MIN(row_id) FROM catalog_product_entity").Scan(&startIntervalID)
 
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
@@ -88,7 +88,7 @@ func (m *PlannerManager) getPlannerStartIntervalID(db *sql.DB) int {
 func (m *PlannerManager) getLastIntervalID(db *sql.DB) int {
 	var startIntervalID int
 
-	err := db.QueryRow("SELECT MAX(entity_id) FROM catalog_product_entity").Scan(&startIntervalID)
+	err := db.QueryRow("SELECT MAX(row_id) FROM catalog_product_entity").Scan(&startIntervalID)
 
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
@@ -101,7 +101,7 @@ func (m *PlannerManager) getLastIntervalID(db *sql.DB) int {
 func (m *PlannerManager) getPlannerEndIntervalID(db *sql.DB, startIntervalID int, chunkSize int) int {
 	var endIntervalID int
 
-	err := db.QueryRow("SELECT entity_id FROM catalog_product_entity WHERE entity_id >= ? ORDER BY entity_id LIMIT ?,1", startIntervalID, chunkSize).Scan(&endIntervalID)
+	err := db.QueryRow("SELECT row_id FROM catalog_product_entity WHERE row_id >= ? ORDER BY row_id LIMIT ?,1", startIntervalID, chunkSize).Scan(&endIntervalID)
 
 	if err == sql.ErrNoRows {
 		return 0
@@ -118,7 +118,7 @@ func (m *PlannerManager) getPlannerEndIntervalID(db *sql.DB, startIntervalID int
 func (m *PlannerManager) getTableSize(db *sql.DB) int {
 	var count int
 
-	err := db.QueryRow("SELECT COUNT(entity_id) FROM catalog_product_entity").Scan(&count)
+	err := db.QueryRow("SELECT COUNT(row_id) FROM catalog_product_entity").Scan(&count)
 
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
